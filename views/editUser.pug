@@ -1,0 +1,4 @@
+extend layout
+block content
+  a(href="/") User list
+  +userForm(user.first_name, user.last_name, user.email, user.age, `/edit/${user.id}`)

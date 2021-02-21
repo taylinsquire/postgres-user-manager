@@ -1,0 +1,11 @@
+extend layout
+block content
+  a(href="/") User list
+  form(method="get" action="/filter-user-list")
+    div
+      label First Name
+      input(type='text' name='fname' id='fname' placeholder='First name')
+    div
+      label Last Name
+      input(type='text' name='lname' id='lname' placeholder='Last name')
+    button(type="submit") Search

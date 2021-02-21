@@ -1,0 +1,37 @@
+extend layout
+block content
+  div
+    a(href="/new-user-form") Create new user
+  div
+    a(href="/searchusers") Search
+  div
+    h4 Sort by last name
+    form(method="get" action=currentUrl)
+      each query, queryName in queries
+        - var notSort = (queryName != 'sort')
+        if notSort
+          input(type="hidden" name=queryName value=query)
+      label(for="asc") ascending
+      input(type="radio", name="sort" id="asc" value=1)
+      label(for="desc") descending
+      input(type="radio", name="sort" id="desc" value=-1)
+      button Sort
+  br
+  table
+    tr
+      th User ID
+      th First Name
+      th Last Name
+      th Email
+      th Age
+    each user in users
+      tr
+        td= user.id
+        td= user.first_name
+        td= user.last_name
+        td= user.email
+        td= user.age
+        td
+          a(href=`/edit/${user.id}`) Edit
+        td
+          a(href=`/delete/${user.id}`) Delete

@@ -1,0 +1,13 @@
+mixin inputBlock(name, label, type)
+  div
+    label #{label}:
+    input(name=name id=name type=type)
+mixin userForm(name, email, age, action)
+  -name = name || ''
+  -email = email || ''
+  -age = age || ''
+  form(method="post", action=action)
+    +inputBlock('name', 'Name', 'text')
+    +inputBlock('email', 'Email', 'email')
+    +inputBlock('age', 'Age', 'number')
+    button(type="submit") Submit

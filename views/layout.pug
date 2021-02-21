@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+mixin inputBlock(name, label, type, value)
+  div
+    label #{label}:
+    input(name=name id=name type=type value=value)
+mixin userForm(fname, lname, email, age, action)
+  //- -name = name || ''
+  //- -email = email || ''
+  //- -age = age || ''
+  form(method="post", action=action)
+    +inputBlock('fname', 'First Name', 'text', fname)
+    +inputBlock('lname', 'Last Name', 'text', lname)
+    +inputBlock('email', 'Email', 'email', email)
+    +inputBlock('age', 'Age', 'number', age)
+    button(type="submit") Submit
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Simple User Manager
+  body
+    block content
