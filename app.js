@@ -66,9 +66,10 @@ app.get('/new-user-form', (req, res) => {
 });
 app.post('/new-user-form', (req, res) => {
   queryDB('Select max(id) from users').then((data) => {
-    const nextID = parseInt(data.rows[0].max) + 1;
+    const nextID = data.rows[0].max ? parseInt(data.rows[0].max) + 1 : 1;
+    console.log(nextID)
     queryDB(`Insert into users (id, first_name, last_name, email, age) values ($1, $2, $3, $4, $5)`, [
-      nextID,
+      parseInt(nextID),
       req.body.fname,
       req.body.lname,
       req.body.email,
