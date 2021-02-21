@@ -11,6 +11,12 @@ const pool = new Pool({
 });
 const port = process.env.PORT || 3000;
 
+queryDB(`Select to_regclass('public.users')`).then((data) => {
+  if (data.rows[0].to_regclass == null) {
+    queryDB('Create Table users(id int, first_name varchar(80), last_name varchar(80), email varchar(80), age int)');
+  }
+});
+
 app.use(express.urlencoded({ extended: false }));
 
 app.set('views', __dirname + '/views');
@@ -35,9 +41,11 @@ app.get('/filter-user-list', (req, res) => {
   let sort = req.query.sort ? (req.query.sort == 1 ? 'asc' : 'desc') : 'desc';
   console.log(req.query);
   if (req.query.fname && req.query.lname) {
-    queryDB(`Select * from users where first_name = $1 AND last_name = $2 order by id ${sort} limit 10`, [req.query.fname, req.query.lname]).then((users) => {
-      res.render('userList', { users: users.rows, currentUrl: req.url, queries: req.query });
-    });
+    queryDB(`Select * from users where first_name = $1 AND last_name = $2 order by id ${sort} limit 10`, [req.query.fname, req.query.lname]).then(
+      (users) => {
+        res.render('userList', { users: users.rows, currentUrl: req.url, queries: req.query });
+      }
+    );
   } else if (req.query.fname) {
     queryDB(`Select * from users where first_name = $1 order by last_name ${sort} limit 10`, [req.query.fname]).then((users) => {
       res.render('userList', { users: users.rows, currentUrl: req.url, queries: req.query });
@@ -53,14 +61,17 @@ app.get('/new-user-form', (req, res) => {
   res.render('newUser');
 });
 app.post('/new-user-form', (req, res) => {
-  queryDB(`Insert into users (id, first_name, last_name, email, age) values ($1, $2, $3, $4, $5)`, [
-    1,
-    req.body.fname,
-    req.body.lname,
-    req.body.email,
-    req.body.age,
-  ]).then(() => {
-    res.redirect('/userlist');
+  queryDB('Select max(id) from users').then((data) => {
+    const nextID = parseInt(data.rows[0].max) + 1;
+    queryDB(`Insert into users (id, first_name, last_name, email, age) values ($1, $2, $3, $4, $5)`, [
+      nextID,
+      req.body.fname,
+      req.body.lname,
+      req.body.email,
+      req.body.age,
+    ]).then(() => {
+      res.redirect('/userlist');
+    });
   });
 });
 
